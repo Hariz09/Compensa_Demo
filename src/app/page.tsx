@@ -1,101 +1,117 @@
-import Image from "next/image";
+"use client"
+import React from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
+import { Button } from "./ui/button"; // Adjust the import path as necessary
+import { Users, UserCog, MoveRight, Shield, Briefcase } from 'lucide-react';
+import Link from "next/link";
 
-export default function Home() {
+// Define the type for feature objects
+interface Feature {
+  title: string;
+  description: string;
+  icon: JSX.Element; // Use JSX.Element for React components
+  gradient: string;
+}
+
+export default function HomePage() {
+  // Define the handleNavigation function with a parameter type
+  const handleNavigation = (path: string): void => {
+    console.log(`Navigating to: ${path}`);
+  };
+
+  const features: Feature[] = [
+    {
+      title: "Employee Access",
+      description: "View your personal salary information and payment history",
+      icon: <Users className="h-8 w-8 text-cyan-400" />,
+      gradient: "from-cyan-500/10 to-cyan-500/20"
+    },
+    {
+      title: "Manager Dashboard",
+      description: "Monitor team salaries and submit change requests",
+      icon: <Briefcase className="h-8 w-8 text-emerald-400" />,
+      gradient: "from-emerald-500/10 to-emerald-500/20"
+    },
+    {
+      title: "HR Administration",
+      description: "Complete salary management and employee administration",
+      icon: <UserCog className="h-8 w-8 text-fuchsia-400" />,
+      gradient: "from-fuchsia-500/10 to-fuchsia-500/20"
+    },
+    {
+      title: "Secure Platform",
+      description: "Role-based access control and data protection",
+      icon: <Shield className="h-8 w-8 text-amber-400" />,
+      gradient: "from-amber-500/10 to-amber-500/20"
+    }
+  ];
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+    <div className="min-h-screen bg-gray-950 text-gray-100">
+      {/* Hero Section */}
+      <div className="bg-gradient-to-b from-gray-900 to-gray-950 border-b border-gray-800">
+        <div className="max-w-7xl mx-auto py-10 px-4 sm:px-6 lg:px-8">
+          <div className="text-center">
+            <h3 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 via-fuchsia-400 to-emerald-400 sm:text-5xl min-h-14">
+              Welcome to the Salary Management System
+            </h3>
+            <p className="mt-2 text-xl text-gray-400">
+              Streamline your salary management process with our comprehensive platform
+            </p>
+            <div className="mt-8 flex flex-wrap justify-center">
+            <Link
+            href="/login"
+            className="transition ease-in-out delay-150 flex items-center gap-3 rounded-lg bg-gradient-to-r from-cyan-400 to-sky-600 hover:-translate-y-1 hover:scale-110  px-6 py-2 text-sm font-medium text-white md:text-base bg-[length:200%_200%]">
+            <span>Log in</span> <MoveRight className="w-5 md:w-6" />
+          </Link>
+            </div>
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+      </div>
+
+      {/* Features Section */}
+      <div className="max-w-7xl mx-auto py-16 px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          {features.map((feature, index) => (
+            <Card 
+              key={index} 
+              className={`hover:scale-105 transition-all duration-300 bg-gradient-to-br ${feature.gradient} border-none backdrop-blur-sm bg-opacity-10`}
+            >
+              <CardHeader>
+                <div className="flex justify-center">{feature.icon}</div>
+                <CardTitle className="text-center text-gray-100">{feature.title}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-center text-gray-400">{feature.description}</p>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </div>
+
+      {/* Call to Action */}
+      <div className="relative mt-5">
+        <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/20 via-fuchsia-500/20 to-emerald-500/20 blur-3xl" />
+        <div className="relative">
+          <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+            <div className="text-center">
+              <h2 className="text-3xl font-bold text-white">
+                Ready to streamline your salary management?
+              </h2>
+              <p className="mt-4 text-xl text-gray-300">
+                Get started today with our easy-to-use platform
+              </p>
+              <div className="mt-8 flex flex-wrap justify-center">
+              <Link
+                href="/about"
+                className="transition ease-in-out delay-150 flex items-center gap-3 rounded-lg border-gray-600 bg-slate-200/30 backdrop-blur-lg hover:-translate-y-1 hover:scale-110  px-6 py-2 text-sm font-medium text-white md:text-base bg-[length:200%_200%]">
+                <span>Learn More</span> 
+              </Link>
+            </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
