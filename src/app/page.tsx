@@ -1,7 +1,6 @@
 "use client"
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
-import { Button } from "./ui/button"; // Adjust the import path as necessary
 import { Users, UserCog, MoveRight, Shield, Briefcase } from 'lucide-react';
 import Link from "next/link";
 
@@ -14,11 +13,6 @@ interface Feature {
 }
 
 export default function HomePage() {
-  // Define the handleNavigation function with a parameter type
-  const handleNavigation = (path: string): void => {
-    console.log(`Navigating to: ${path}`);
-  };
-
   const features: Feature[] = [
     {
       title: "Employee Access",

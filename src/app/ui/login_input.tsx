@@ -11,7 +11,7 @@ interface InputProps {
   warning?: string;
 }
 
-export function LoginInput({ label, iconColor, maxLength, placeholder, onChange, warning }: InputProps) {
+export function LoginInput({iconColor, maxLength, placeholder, onChange, warning }: InputProps) {
   const [showPassword, setShowPassword] = useState(false);
 
   return (
