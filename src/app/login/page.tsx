@@ -48,7 +48,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex items-center justify-center h-screen min-h-screen relative">
+    <div className="flex items-center justify-center h-screen min-h-screen bg-gray-950 text-gray-100 relaive">
       <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/20 via-fuchsia-500/20 to-emerald-500/20 blur-3xl"></div>
       <ReturnButton href='/' className=''></ReturnButton>
 
