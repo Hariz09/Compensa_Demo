@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { KeyRound, Eye, EyeOff } from 'lucide-react';
+import { Eye, EyeOff } from 'lucide-react';
 
 interface InputProps {
   label: string;
   iconColor: string;
+  icon: JSX.Element; // Accept the icon as a prop
   maxLength: number;
   placeholder: string;
   type?: string;
@@ -11,34 +12,48 @@ interface InputProps {
   warning?: string;
 }
 
-export function LoginInput({iconColor, maxLength, placeholder, onChange, warning }: InputProps) {
+export function LoginInput({
+  icon,
+  iconColor,
+  maxLength,
+  placeholder,
+  onChange,
+  warning,
+  type = 'text',
+}: InputProps) {
   const [showPassword, setShowPassword] = useState(false);
 
+  const isPasswordInput = type === 'password';
+
   return (
-    <div className="relative w-full">
-      <span className={`absolute left-3 top-1/2 transform -translate-y-1/2 ${iconColor}`}>
-        <KeyRound />
-      </span>
-      <input
-        type={showPassword ? 'text' : 'password'}
-        placeholder={placeholder}
-        className="border rounded-md p-2 w-full text-white pl-10 pr-10 bg-transparent"
-        maxLength={maxLength}
-        onChange={onChange}
-        required
-      />
-      {warning && <p className="text-red-500 text-sm mt-1 absolute">{warning}</p>}
-      {showPassword ? (
-        <EyeOff
-          className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 cursor-pointer"
-          onClick={() => setShowPassword(!showPassword)}
+    <div className="relative w-full mb-4"> {/* Added margin bottom for spacing */}
+      <div className="flex items-center">
+        <span className={`absolute left-3 ${iconColor}`}>
+          {icon} {/* Render the passed icon */}
+        </span>
+        <input
+          type={isPasswordInput && showPassword ? 'text' : type}
+          placeholder={placeholder}
+          className="border rounded-md p-2 w-full text-white pl-10 pr-10 bg-transparent"
+          maxLength={maxLength}
+          onChange={onChange}
+          required
         />
-      ) : (
-        <Eye
-          className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 cursor-pointer"
-          onClick={() => setShowPassword(!showPassword)}
-        />
-      )}
+        {isPasswordInput ? (
+          showPassword ? (
+            <EyeOff
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 cursor-pointer"
+              onClick={() => setShowPassword(!showPassword)}
+            />
+          ) : (
+            <Eye
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 cursor-pointer"
+              onClick={() => setShowPassword(!showPassword)}
+            />
+          )
+        ) : null}
+      </div>
+      {warning && <p className="text-red-500 text-sm">{warning}</p>} {/* Moved warning outside of input container */}
     </div>
   );
 }

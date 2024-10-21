@@ -2,9 +2,10 @@
 
 import React, { useState } from 'react';
 import { Card } from "../ui/card";
-import { ReturnButton, LoginButton} from "../ui/button";
+import { ReturnButton, LoginButton } from "../ui/button";
 import { RoleTabs } from "../ui/tabs";
 import { LoginInput } from "../ui/login_input";
+import { User, Briefcase, UserCog, KeyRound } from 'lucide-react'; // Import the required icons
 
 type Role = 'employee' | 'manager' | 'admin';
 
@@ -34,21 +35,24 @@ export default function LoginPage() {
       label: 'Employee',
       buttonColor: 'bg-blue-500 hover:bg-blue-600',
       iconColor: 'text-blue-500',
+      icon: <User />, // User icon for Employee
     },
     manager: {
       label: 'Manager',
       buttonColor: 'bg-purple-500 hover:bg-purple-600',
       iconColor: 'text-purple-500',
+      icon: <Briefcase />, // Briefcase icon for Manager
     },
     admin: {
       label: 'Admin',
       buttonColor: 'bg-green-500 hover:bg-green-600',
       iconColor: 'text-green-500',
+      icon: <UserCog />, // UserCog icon for Admin
     },
   };
 
   return (
-    <div className="flex items-center justify-center h-screen min-h-screen bg-gray-950 text-gray-100 relaive">
+    <div className="flex items-center justify-center h-screen min-h-screen bg-gray-950 text-gray-100 relative">
       <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/20 via-fuchsia-500/20 to-emerald-500/20 blur-3xl"></div>
       <ReturnButton href='/' className=''></ReturnButton>
 
@@ -69,18 +73,22 @@ export default function LoginPage() {
           <LoginInput
             label={roleConfigs[selectedRole].label}
             iconColor={roleConfigs[selectedRole].iconColor}
+            icon={roleConfigs[selectedRole].icon} // Pass the corresponding role icon
             maxLength={20}
             placeholder={`${roleConfigs[selectedRole].label} Username`}
+            type="text" // Set type to text for username
             onChange={handleUsernameChange}
             warning={usernameWarning}
           />
           <LoginInput
             label="Password"
             iconColor={roleConfigs[selectedRole].iconColor}
+            icon={<KeyRound />} // Always use KeyRound icon for password
             maxLength={25}
             placeholder="Password"
             onChange={handlePasswordChange}
             warning={passwordWarning}
+            type="password" // Set type to password for password input
           />
           <LoginButton
             label={roleConfigs[selectedRole].label}
