@@ -1,7 +1,6 @@
-// page.tsx
 "use client";
 
-import React, { useState, useEffect, Suspense } from "react";
+import React, { useState, useEffect, useCallback, Suspense } from "react";
 import dynamic from "next/dynamic";
 import { useSearchParams } from 'next/navigation';
 import { generateMockData } from '../utils';
@@ -49,20 +48,55 @@ const AdminToolsCard = dynamic(
   }
 );
 
-const AdminDashboard: React.FC = () => {
-  const [isLoading, setIsLoading] = useState(true);
-  const [monthlyData, setMonthlyData] = useState<MonthData[]>([]);
-  const [currentMonthData, setCurrentMonthData] = useState<MonthData | null>(null);
-  
-  // Get search params for filtering
+const SearchParamsHandler: React.FC<{
+  setSearchParams: (
+    currentMonth: string,
+    currentDepartment: string,
+    currentSearch: string,
+    currentStatus: string
+  ) => void;
+}> = ({ setSearchParams }) => {
   const searchParams = useSearchParams();
   const currentMonth = searchParams.get('month') || 'Jan';
   const currentDepartment = searchParams.get('department') || '';
   const currentSearch = searchParams.get('search') || '';
   const currentStatus = searchParams.get('status') || '';
 
+  useEffect(() => {
+    setSearchParams(currentMonth, currentDepartment, currentSearch, currentStatus);
+  }, [currentMonth, currentDepartment, currentSearch, currentStatus, setSearchParams]);
+
+  return null;
+};
+
+const AdminDashboard: React.FC = () => {
+  const [isLoading, setIsLoading] = useState(true);
+  const [monthlyData, setMonthlyData] = useState<MonthData[]>([]);
+  const [currentMonthData, setCurrentMonthData] = useState<MonthData | null>(null);
+  const [filterParams, setFilterParams] = useState({
+    currentMonth: 'Jan',
+    currentDepartment: '',
+    currentSearch: '',
+    currentStatus: ''
+  });
+
   // Define available departments
   const departments = ['HR', 'Engineering', 'Sales', 'Marketing', 'Finance', 'Operations'];
+
+  // Wrap setFilterParams in useCallback to ensure a stable reference
+  const setSearchParams = useCallback((
+    currentMonth: string,
+    currentDepartment: string,
+    currentSearch: string,
+    currentStatus: string
+  ) => {
+    setFilterParams({
+      currentMonth,
+      currentDepartment,
+      currentSearch,
+      currentStatus
+    });
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -71,7 +105,7 @@ const AdminDashboard: React.FC = () => {
         await new Promise(resolve => setTimeout(resolve, 1500));
         const data = generateMockData();
         setMonthlyData(data);
-        const initialMonthData = data.find((d) => d.month === currentMonth);
+        const initialMonthData = data.find((d) => d.month === filterParams.currentMonth);
         if (initialMonthData) setCurrentMonthData(initialMonthData);
       } catch (error) {
         console.error('Error loading data:', error);
@@ -81,14 +115,14 @@ const AdminDashboard: React.FC = () => {
     };
 
     fetchData();
-  }, [currentMonth]);
+  }, [filterParams.currentMonth]);
 
   useEffect(() => {
     if (monthlyData.length > 0) {
-      const monthData = monthlyData.find((d) => d.month === currentMonth);
+      const monthData = monthlyData.find((d) => d.month === filterParams.currentMonth);
       if (monthData) setCurrentMonthData(monthData);
     }
-  }, [monthlyData, currentMonth]);
+  }, [monthlyData, filterParams.currentMonth]);
 
   if (isLoading || !currentMonthData) {
     return <LoadingSkeleton />;
@@ -96,18 +130,18 @@ const AdminDashboard: React.FC = () => {
 
   // Filter employees based on URL parameters
   const filteredEmployees = currentMonthData.employees.filter((employee) => {
-    const matchesSearch = !currentSearch || 
-      employee.name.toLowerCase().includes(currentSearch.toLowerCase()) ||
-      employee.position.toLowerCase().includes(currentSearch.toLowerCase());
-    
-    const matchesDepartment = !currentDepartment || 
-      employee.department === currentDepartment;
-    
-    const matchesStatus = !currentStatus || 
-      employee.status === currentStatus;
+    const matchesSearch = !filterParams.currentSearch || 
+      employee.name.toLowerCase().includes(filterParams.currentSearch.toLowerCase()) ||
+      employee.position.toLowerCase().includes(filterParams.currentSearch.toLowerCase());
+
+    const matchesDepartment = !filterParams.currentDepartment || 
+      employee.department === filterParams.currentDepartment;
+
+    const matchesStatus = !filterParams.currentStatus || 
+      employee.status === filterParams.currentStatus;
 
     const hasMonthData = employee.monthlyData.some(
-      (data) => data.month === currentMonth
+      (data) => data.month === filterParams.currentMonth
     );
 
     return matchesSearch && matchesDepartment && matchesStatus && hasMonthData;
@@ -119,6 +153,10 @@ const AdminDashboard: React.FC = () => {
         HRD Dashboard
       </h1>
 
+      <Suspense fallback={<LoadingSkeleton />}>
+        <SearchParamsHandler setSearchParams={setSearchParams} />
+      </Suspense>
+
       <Suspense fallback={
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
           <CardSkeleton />
@@ -127,7 +165,7 @@ const AdminDashboard: React.FC = () => {
       }>
         <SummaryCards
           currentMonthData={currentMonthData}
-          selectedMonth={currentMonth}
+          selectedMonth={filterParams.currentMonth}
           filteredEmployeesCount={filteredEmployees.length}
         />
       </Suspense>
@@ -143,8 +181,9 @@ const AdminDashboard: React.FC = () => {
           departments={departments}
         />
       </Suspense>
+
       <Suspense fallback={<TableSkeleton/>}>
-        <AdminToolsCard></AdminToolsCard>
+        <AdminToolsCard />
       </Suspense>
     </div>
   );

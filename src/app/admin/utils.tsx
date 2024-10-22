@@ -17,8 +17,8 @@ export const calculateTotalSalary = (monthlyData: MonthlyData): number => {
 };
 
 export const generateMonthlyDataForEmployee = (
-  name: string,
-  department: string,
+  //name: string,
+  //department: string,
 ): MonthlyData[] => {
   const months = [
     "Jan", "Feb", "Mar", "Apr", "May", "Jun",
@@ -57,7 +57,7 @@ export const generateMockData = (): MonthData[] => {
     "Jan", "Feb", "Mar", "Apr", "May", "Jun",
     "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
   ];
-  const departments = ["Development", "Design", "HR", "Quality Assurance"];
+  //const departments = ["Development", "Design", "HR", "Quality Assurance"];
   const statuses = ["Paid", "Not Paid"];
 
   const employeeTemplates = [
@@ -109,7 +109,7 @@ export const generateMockData = (): MonthData[] => {
   const employees: Employee[] = employeeTemplates.map(template => ({
     ...template,
     status: statuses[Math.floor(Math.random() * statuses.length)],
-    monthlyData: generateMonthlyDataForEmployee(template.name, template.department),
+    monthlyData: generateMonthlyDataForEmployee(),
     totalSalary: 0,
   }));
 
