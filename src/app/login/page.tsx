@@ -1,5 +1,4 @@
-"use client";
-
+"use client"
 import React, { useState } from 'react';
 import { Card } from "../ui/card";
 import { ReturnButton, LoginButton } from "../ui/button";
@@ -51,6 +50,9 @@ export default function LoginPage() {
     },
   };
 
+  // Construct the redirect path based on the selected role
+  const redirectPath = `/${selectedRole}/dashboard`;
+
   return (
     <div className="flex items-center justify-center h-screen min-h-screen bg-gray-950 text-gray-100 relative">
       <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/20 via-fuchsia-500/20 to-emerald-500/20 blur-3xl"></div>
@@ -93,6 +95,7 @@ export default function LoginPage() {
           <LoginButton
             label={roleConfigs[selectedRole].label}
             buttonColor={roleConfigs[selectedRole].buttonColor}
+            redirectTo={redirectPath} // Pass the redirect path to LoginButton
           />
         </div>
       </Card>

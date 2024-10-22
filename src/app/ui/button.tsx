@@ -58,16 +58,14 @@ export const ReturnButton: React.FC<ReturnButtonProps> = ({ href, className = ''
 interface LoginButtonProps {
   label: string;
   buttonColor: string;
-};
+  redirectTo: string; // Add redirectTo prop
+}
 
-export function LoginButton({ label, buttonColor }: LoginButtonProps) {
+export function LoginButton({ label, buttonColor, redirectTo }: LoginButtonProps) {
   return (
-    <button
-      className={`text-white rounded-md p-2 w-full ${buttonColor}`}
-      style={{ userSelect: 'none' }}
-    >
+    <Link href={redirectTo} className={`text-white rounded-md p-2 w-full ${buttonColor} text-center block`} style={{ userSelect: 'none' }}>
       Login as {label}
-    </button>
+    </Link>
   );
 }
 
