@@ -2,7 +2,7 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Suspense } from "react";
 import { User, MonthlyData } from "../../lib/types";
 import { generateMockData } from "../../lib/utils";
 import Notification from "./components/Notification";
@@ -10,12 +10,12 @@ import SalaryDetails from "./components/SalaryDetails";
 import AddEntryForm from "./components/AddEntryForm";
 import NavigationBar from "./components/NavigationBar";
 
-const ActionPage: React.FC = () => {
+
+const ActionPageContent: React.FC = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const userId = searchParams.get("userId");
   const selectedMonth = searchParams.get("month");
-
   const [userData, setUserData] = useState<User | null>(null);
   const [showNotification, setShowNotification] = useState(false);
 
@@ -50,7 +50,6 @@ const ActionPage: React.FC = () => {
     setShowNotification(true);
     setTimeout(() => setShowNotification(false), 3000);
   };
-
   return (
     <div className="bg-gray-800 min-h-screen">
       <NavigationBar userId={userId!} />
@@ -67,6 +66,14 @@ const ActionPage: React.FC = () => {
         <Notification message="Successfully updated" visible={showNotification} />
       </div>
     </div>
+  );
+};
+
+const ActionPage: React.FC = () => {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <ActionPageContent />
+    </Suspense>
   );
 };
 
