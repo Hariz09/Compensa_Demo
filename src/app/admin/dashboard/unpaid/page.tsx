@@ -1,124 +1,125 @@
-'use client'
+// unpaid/page.tsx
+'use client';
 
-import React, { useState, useEffect } from 'react'
-import Link from 'next/link'
-import { useSearchParams } from 'next/navigation'
-import { ArrowLeft } from 'lucide-react'
-import { generateMockData } from '../../lib/utils'
-import { MonthData } from '../../lib/types'
-import { FilterBar } from './components/FilterBar'
-import { MonthCard } from './components/MonthCard'
-import { CheckoutBar } from './components/CheckoutBar'
+import React, { useState, useEffect, Suspense } from 'react';
+import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
+import { ArrowLeft } from 'lucide-react';
+import { generateMockData } from '../../lib/utils';
+import { MonthData } from '../../lib/types';
+import { FilterBar } from './components/FilterBar';
+import { MonthCard } from './components/MonthCard';
+import { CheckoutBar } from './components/CheckoutBar';
 
-export default function UnpaidDashboard() {
-  const searchParams = useSearchParams()
-  const [data, setData] = useState<MonthData[]>([])
-  const [selectedUsers, setSelectedUsers] = useState<Record<string, Set<number>>>({})
-  const [selectedMonths, setSelectedMonths] = useState<Set<string>>(new Set())
-  const [allSelected, setAllSelected] = useState(false)
-  
-  const monthFilter = searchParams.get('month') || 'all'
-  const departmentFilter = searchParams.get('department') || 'all'
-  const searchQuery = searchParams.get('search') || ''
+// The main component for rendering the unpaid dashboard
+const UnpaidDashboardContent: React.FC = () => {
+  const searchParams = useSearchParams();
+  const [data, setData] = useState<MonthData[]>([]);
+  const [selectedUsers, setSelectedUsers] = useState<Record<string, Set<number>>>({});
+  const [selectedMonths, setSelectedMonths] = useState<Set<string>>(new Set());
+  const [allSelected, setAllSelected] = useState(false);
+
+  const monthFilter = searchParams.get('month') || 'all';
+  const departmentFilter = searchParams.get('department') || 'all';
+  const searchQuery = searchParams.get('search') || '';
 
   useEffect(() => {
-    const mockData = generateMockData()
-    setData(mockData)
-    const initialSelectedUsers: Record<string, Set<number>> = {}
+    const mockData = generateMockData();
+    setData(mockData);
+    const initialSelectedUsers: Record<string, Set<number>> = {};
     mockData.forEach(monthData => {
-      initialSelectedUsers[monthData.month] = new Set()
-    })
-    setSelectedUsers(initialSelectedUsers)
-  }, [])
+      initialSelectedUsers[monthData.month] = new Set();
+    });
+    setSelectedUsers(initialSelectedUsers);
+  }, []);
 
   const departments = Array.from(
     new Set(data.flatMap(month => month.employees.map(emp => emp.department)))
-  )
+  );
 
   const filteredData = data.filter(monthData => {
-    if (monthFilter !== 'all' && monthFilter !== monthData.month) return false
-    
+    if (monthFilter !== 'all' && monthFilter !== monthData.month) return false;
+
     return monthData.employees.some(emp => 
       emp.status === 'Not Paid' &&
       (departmentFilter === 'all' || emp.department === departmentFilter) &&
       (!searchQuery || emp.name.toLowerCase().includes(searchQuery.toLowerCase()))
-    )
-  })
+    );
+  });
 
   const toggleUser = (userId: number, month: string) => {
-    const updatedMonthUsers = new Set(selectedUsers[month])
+    const updatedMonthUsers = new Set(selectedUsers[month]);
     if (updatedMonthUsers.has(userId)) {
-      updatedMonthUsers.delete(userId)
+      updatedMonthUsers.delete(userId);
     } else {
-      updatedMonthUsers.add(userId)
+      updatedMonthUsers.add(userId);
     }
-    setSelectedUsers(prev => ({ ...prev, [month]: updatedMonthUsers }))
-  }
+    setSelectedUsers(prev => ({ ...prev, [month]: updatedMonthUsers }));
+  };
 
   const toggleMonth = (month: string) => {
-    const monthUserIds = data.find(m => m.month === month)?.employees.filter(emp => emp.status === 'Not Paid').map(emp => emp.id) || []
-    const newSelectedUsers = new Set(selectedUsers[month])
+    const monthUserIds = data.find(m => m.month === month)?.employees.filter(emp => emp.status === 'Not Paid').map(emp => emp.id) || [];
+    const newSelectedUsers = new Set(selectedUsers[month]);
     if (selectedMonths.has(month)) {
-      monthUserIds.forEach(id => newSelectedUsers.delete(id))
-      setSelectedMonths(prev => new Set(Array.from(prev).filter(m => m !== month)))
+      monthUserIds.forEach(id => newSelectedUsers.delete(id));
+      setSelectedMonths(prev => new Set(Array.from(prev).filter(m => m !== month)));
     } else {
-      monthUserIds.forEach(id => newSelectedUsers.add(id))
-      setSelectedMonths(prev => new Set(prev).add(month))
+      monthUserIds.forEach(id => newSelectedUsers.add(id));
+      setSelectedMonths(prev => new Set(prev).add(month));
     }
-    setSelectedUsers(prev => ({ ...prev, [month]: newSelectedUsers }))
-  }
+    setSelectedUsers(prev => ({ ...prev, [month]: newSelectedUsers }));
+  };
 
   const selectAll = () => {
     if (allSelected) {
-      const clearedSelection: Record<string, Set<number>> = {}
+      const clearedSelection: Record<string, Set<number>> = {};
       data.forEach(monthData => {
-        clearedSelection[monthData.month] = new Set()
-      })
-      setSelectedUsers(clearedSelection)
-      setSelectedMonths(new Set())
-      setAllSelected(false)
+        clearedSelection[monthData.month] = new Set();
+      });
+      setSelectedUsers(clearedSelection);
+      setSelectedMonths(new Set());
+      setAllSelected(false);
     } else {
-      const allUnpaidUserIdsByMonth: Record<string, Set<number>> = {}
+      const allUnpaidUserIdsByMonth: Record<string, Set<number>> = {};
       data.forEach(monthData => {
-        allUnpaidUserIdsByMonth[monthData.month] = new Set(monthData.employees.filter(emp => emp.status === 'Not Paid').map(emp => emp.id))
-      })
-      setSelectedUsers(allUnpaidUserIdsByMonth)
-      setSelectedMonths(new Set(data.map(m => m.month)))
-      setAllSelected(true)
+        allUnpaidUserIdsByMonth[monthData.month] = new Set(monthData.employees.filter(emp => emp.status === 'Not Paid').map(emp => emp.id));
+      });
+      setSelectedUsers(allUnpaidUserIdsByMonth);
+      setSelectedMonths(new Set(data.map(m => m.month)));
+      setAllSelected(true);
     }
-  }
+  };
 
   const totalSelectedSalary = Object.keys(selectedUsers).reduce((total, month) => {
-    const monthUsers = selectedUsers[month]
-    const monthData = data.find(m => m.month === month)
-    if (!monthData) return total
+    const monthUsers = selectedUsers[month];
+    const monthData = data.find(m => m.month === month);
+    if (!monthData) return total;
     return total + Array.from(monthUsers).reduce((monthTotal, userId) => {
-      const user = monthData.employees.find(emp => emp.id === userId)
-      return monthTotal + (user?.totalSalary || 0)
-    }, 0)
-  }, 0)
+      const user = monthData.employees.find(emp => emp.id === userId);
+      return monthTotal + (user?.totalSalary || 0);
+    }, 0);
+  }, 0);
 
   const updateSearchParams = (key: string, value: string) => {
-    const params = new URLSearchParams(searchParams.toString())
+    const params = new URLSearchParams(searchParams.toString());
     if (value && value !== 'all') {
-      params.set(key, value)
+      params.set(key, value);
     } else {
-      params.delete(key)
+      params.delete(key);
     }
-    window.history.pushState(null, '', `?${params.toString()}`)
-  }
+    window.history.pushState(null, '', `?${params.toString()}`);
+  };
 
   const prepareCheckoutData = () => {
     const selectedData = data.reduce((acc, monthData) => {
-      const selectedEmployees = monthData.employees.filter(emp => selectedUsers[monthData.month]?.has(emp.id))
+      const selectedEmployees = monthData.employees.filter(emp => selectedUsers[monthData.month]?.has(emp.id));
       if (selectedEmployees.length > 0) {
-        acc[monthData.month] = selectedEmployees
+        acc[monthData.month] = selectedEmployees;
       }
-      return acc
-    }, {} as Record<string, typeof data[0]['employees']>)
-    localStorage.setItem('checkoutData', JSON.stringify(selectedData))
-  }
-
+      return acc;
+    }, {} as Record<string, typeof data[0]['employees']>);
+    localStorage.setItem('checkoutData', JSON.stringify(selectedData));
+  };
   const handleStatusChange = (userId: number, status: string) => {
     setData(prevData => 
       prevData.map(monthData => ({
@@ -181,9 +182,9 @@ export default function UnpaidDashboard() {
                 emp.status === 'Not Paid' &&
                 (departmentFilter === 'all' || emp.department === departmentFilter) &&
                 (!searchQuery || emp.name.toLowerCase().includes(searchQuery.toLowerCase()))
-              )
+              );
 
-            if (unpaidEmployees.length === 0) return null
+            if (unpaidEmployees.length === 0) return null;
 
             return (
               <MonthCard
@@ -193,9 +194,9 @@ export default function UnpaidDashboard() {
                 selectedUsers={selectedUsers[monthData.month]}
                 onToggleMonth={() => toggleMonth(monthData.month)}
                 onToggleUser={(userId) => toggleUser(userId, monthData.month)}
-                onStatusChange={handleStatusChange}
+                onStatusChange={(userId, status) => handleStatusChange(userId, status)}
               />
-            )
+            );
           })}
 
           <CheckoutBar
@@ -205,5 +206,14 @@ export default function UnpaidDashboard() {
         </div>
       </div>
     </div>
-  )
+  );
+};
+
+// The component wrapped in Suspense
+export default function UnpaidDashboard() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <UnpaidDashboardContent />
+    </Suspense>
+  );
 }
