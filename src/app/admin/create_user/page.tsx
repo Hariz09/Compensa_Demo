@@ -3,7 +3,7 @@
 import React from 'react';
 import { ReturnButton } from "@/components/ui/button_costume";
 
-export default function AboutPage() {
+export default function CreateUserPage() {
   return (
     <div className="p-4 flex flex-col space-y-4">
       {/* Ensure the button and list have proper spacing */}

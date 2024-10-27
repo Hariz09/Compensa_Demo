@@ -1,6 +1,6 @@
 "use client"
 import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Users, UserCog, MoveRight, Shield, Briefcase } from 'lucide-react';
 import Link from "next/link";
 
@@ -8,7 +8,7 @@ import Link from "next/link";
 interface Feature {
   title: string;
   description: string;
-  icon: JSX.Element; // Use JSX.Element for React components
+  icon: JSX.Element; 
   gradient: string;
 }
 

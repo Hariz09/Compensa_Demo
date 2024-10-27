@@ -1,17 +1,23 @@
 "use client"
+
 import React, { useState } from 'react';
-import { Card } from "../ui/card";
-import { ReturnButton, LoginButton } from "../ui/button";
-import { RoleTabs } from "../ui/tabs";
-import { LoginInput } from "../ui/login_input";
-import { User, Briefcase, UserCog, KeyRound } from 'lucide-react'; // Import the required icons
+import { Card } from "@/components/ui/card";
+import { ReturnButton, LoginButton } from "../../components/ui/button_costume";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { LoginInput } from "./components/login_input";
+import { WarningDialog } from "./components/warning";
+import { User, Briefcase, UserCog, KeyRound } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import LiveWallpaper from './components/live_wallpaper';
 
 type Role = 'employee' | 'manager' | 'admin';
 
 export default function LoginPage() {
-  const [selectedRole, setSelectedRole] = useState<Role>('employee'); // Track selected role
+  const router = useRouter();
+  const [selectedRole, setSelectedRole] = useState<Role>('employee');
   const [usernameWarning, setUsernameWarning] = useState('');
   const [passwordWarning, setPasswordWarning] = useState('');
+  const [showWarning, setShowWarning] = useState(false);
 
   const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.value.length >= 20) {
@@ -29,40 +35,66 @@ export default function LoginPage() {
     }
   };
 
+  const handleLoginClick = () => {
+    setShowWarning(true);
+  };
+
+  const handleWarningConfirm = () => {
+    setShowWarning(false);
+    router.push(`/${selectedRole}/dashboard`);
+  };
+
+  const handleWarningCancel = () => {
+    setShowWarning(false);
+  };
+
   const roleConfigs = {
     employee: {
       label: 'Employee',
-      buttonColor: 'bg-blue-500 hover:bg-blue-600',
-      iconColor: 'text-blue-500',
-      icon: <User />, // User icon for Employee
+      buttonColor: 'bg-cyan-500 hover:bg-cyan-600',
+      iconColor: 'text-cyan-500',
+      tabColor: 'bg-cyan-500/10 data-[state=active]:bg-cyan-500 data-[state=active]:text-white',
+      icon: <User className="h-5 w-5" />,
     },
     manager: {
       label: 'Manager',
       buttonColor: 'bg-purple-500 hover:bg-purple-600',
       iconColor: 'text-purple-500',
-      icon: <Briefcase />, // Briefcase icon for Manager
+      tabColor: 'bg-purple-500/10 data-[state=active]:bg-purple-500 data-[state=active]:text-white',
+      icon: <Briefcase className="h-5 w-5" />,
     },
     admin: {
       label: 'Admin',
       buttonColor: 'bg-green-500 hover:bg-green-600',
       iconColor: 'text-green-500',
-      icon: <UserCog />, // UserCog icon for Admin
+      tabColor: 'bg-green-500/10 data-[state=active]:bg-green-500 data-[state=active]:text-white',
+      icon: <UserCog className="h-5 w-5" />,
     },
   };
 
-  // Construct the redirect path based on the selected role
-  const redirectPath = `/${selectedRole}/dashboard`;
-
   return (
     <div className="flex items-center justify-center h-screen min-h-screen bg-gray-950 text-gray-100 relative">
-      <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/20 via-fuchsia-500/20 to-emerald-500/20 blur-3xl"></div>
+      <LiveWallpaper />
       <ReturnButton href='/' className=''></ReturnButton>
 
       <Card className="w-full max-w-md p-8 border border-gray-500 bg-slate-800/30 backdrop-blur-lg">
-        <RoleTabs selectedRole={selectedRole} setSelectedRole={setSelectedRole} />
+        <Tabs value={selectedRole} onValueChange={(value) => setSelectedRole(value as Role)} className="mb-6">
+          <TabsList className="grid w-full grid-cols-3 p-0.5 bg-slate-700/50 rounded-lg overflow-hidden">
+            {Object.entries(roleConfigs).map(([role, config]) => (
+              <TabsTrigger 
+                key={role} 
+                value={role} 
+                className={`flex items-center justify-center py-2 transition-all duration-200 ease-in-out ${config.tabColor}`}
+              >
+                {config.icon}
+                <span className="ml-2">{config.label}</span>
+              </TabsTrigger>
+            ))}
+          </TabsList>
+        </Tabs>
 
         <div
-          className="py-2 font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 via-fuchsia-400 to-emerald-400 text-3xl text-center"
+          className="py-2 font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 via-purple-400 to-green-400 text-3xl text-center"
           style={{ userSelect: 'none' }}
         >
           Login to Your Account
@@ -75,30 +107,36 @@ export default function LoginPage() {
           <LoginInput
             label={roleConfigs[selectedRole].label}
             iconColor={roleConfigs[selectedRole].iconColor}
-            icon={roleConfigs[selectedRole].icon} // Pass the corresponding role icon
+            icon={roleConfigs[selectedRole].icon}
             maxLength={20}
             placeholder={`${roleConfigs[selectedRole].label} Username`}
-            type="text" // Set type to text for username
+            type="text"
             onChange={handleUsernameChange}
             warning={usernameWarning}
           />
           <LoginInput
             label="Password"
             iconColor={roleConfigs[selectedRole].iconColor}
-            icon={<KeyRound />} // Always use KeyRound icon for password
+            icon={<KeyRound />}
             maxLength={25}
             placeholder="Password"
             onChange={handlePasswordChange}
             warning={passwordWarning}
-            type="password" // Set type to password for password input
+            type="password"
           />
           <LoginButton
             label={roleConfigs[selectedRole].label}
             buttonColor={roleConfigs[selectedRole].buttonColor}
-            redirectTo={redirectPath} // Pass the redirect path to LoginButton
+            onClick={handleLoginClick}
           />
         </div>
       </Card>
+
+      <WarningDialog 
+        open={showWarning} 
+        onConfirm={handleWarningConfirm}
+        onCancel={handleWarningCancel}
+      />
     </div>
   );
 }

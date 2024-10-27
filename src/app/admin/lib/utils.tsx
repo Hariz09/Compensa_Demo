@@ -1,4 +1,4 @@
-import { MonthlyData, Employee, MonthData } from './types';
+import { MonthlyData, User, MonthData } from './types';
 
 export const yAxisFormatter = (value: number) => {
   return `$${(value / 1000)}K`;
@@ -106,7 +106,7 @@ export const generateMockData = (): MonthData[] => {
       
   ];
 
-  const employees: Employee[] = employeeTemplates.map(template => ({
+  const employees: User[] = employeeTemplates.map(template => ({
     ...template,
     status: statuses[Math.floor(Math.random() * statuses.length)],
     monthlyData: generateMonthlyDataForEmployee(),

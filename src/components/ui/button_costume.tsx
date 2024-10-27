@@ -40,7 +40,7 @@ export const Button: React.FC<ButtonProps> = ({
 interface ReturnButtonProps {
   href: string;
   className?: string; // Optional className to customize the button further
-}
+};
 
 export const ReturnButton: React.FC<ReturnButtonProps> = ({ href, className = '' }) => {
   return (
@@ -56,17 +56,39 @@ export const ReturnButton: React.FC<ReturnButtonProps> = ({ href, className = ''
 };
 
 interface LoginButtonProps {
-  label: string;
-  buttonColor: string;
-  redirectTo: string; // Add redirectTo prop
-}
-
-export function LoginButton({ label, buttonColor, redirectTo }: LoginButtonProps) {
-  return (
-    <Link href={redirectTo} className={`text-white rounded-md p-2 w-full ${buttonColor} text-center block`} style={{ userSelect: 'none' }}>
-      Login as {label}
-    </Link>
-  );
-}
-
-
+    label: string;
+    buttonColor: string;
+    redirectTo?: string;  // Made optional
+    onClick?: () => void; // Added onClick handler
+  }
+  
+  export function LoginButton({ label, buttonColor, redirectTo, onClick }: LoginButtonProps) {
+    // If onClick is provided, render a button
+    if (onClick) {
+      return (
+        <button 
+          onClick={onClick}
+          className={`text-white rounded-md p-2 w-full ${buttonColor} text-center`}
+          style={{ userSelect: 'none' }}
+        >
+          Login as {label}
+        </button>
+      );
+    }
+    
+    // If redirectTo is provided, render a Link
+    if (redirectTo) {
+      return (
+        <Link 
+          href={redirectTo} 
+          className={`text-white rounded-md p-2 w-full ${buttonColor} text-center block`}
+          style={{ userSelect: 'none' }}
+        >
+          Login as {label}
+        </Link>
+      );
+    }
+  
+    // Fallback case (though this should never happen given proper usage)
+    return null;
+  }

@@ -10,6 +10,7 @@ interface InputProps {
   type?: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   warning?: string;
+  
 }
 
 export function LoginInput({

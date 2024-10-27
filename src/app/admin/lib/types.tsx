@@ -18,7 +18,7 @@ export interface Deduction {
 }
 
 // types.ts
-export interface Employee {
+export interface User {
   id: number;
   name: string;
   position: string;
@@ -31,5 +31,5 @@ export interface Employee {
 export interface MonthData {
   month: string;
   totalSalary: number;
-  employees: Employee[];
+  employees: User[];
 }

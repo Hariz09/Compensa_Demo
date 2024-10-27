@@ -1,7 +1,7 @@
 "use client"; // Ensure client-side rendering for the component
 
 import React from 'react';
-import { ReturnButton } from "../../ui/button";
+import { ReturnButton } from "@/components/ui/button_costume";
 
 export default function ManagerPage() {
   return (
