@@ -3,8 +3,8 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState, Suspense } from "react";
-import { User, MonthlyData } from "../../lib/types";
-import { generateMockData } from "../../lib/utils";
+import { User, MonthlyData } from "../lib/types";
+import { generateMockData } from "../lib/utils";
 import Notification from "./components/Notification";
 import SalaryDetails from "./components/SalaryDetails";
 import AddEntryForm from "./components/AddEntryForm";

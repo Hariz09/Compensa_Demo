@@ -3,7 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import { Search, Edit2, Filter } from "lucide-react";
-import { User } from "../../lib/types";
+import { User } from "../lib/types";
 import { useRouter, useSearchParams } from "next/navigation";
 
 interface EmployeeTableProps {

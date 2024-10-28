@@ -1,6 +1,6 @@
 // components/SummaryCards.tsx
 import React from 'react';
-import { MonthData } from '../../lib/types';
+import { MonthData } from '../lib/types';
 
 interface SummaryCardsProps {
   currentMonthData: MonthData;

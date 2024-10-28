@@ -9,8 +9,8 @@ import {
   ResponsiveContainer,
   TooltipProps,
 } from "recharts";
-import { MonthData } from '../../lib/types';
-import { yAxisFormatter } from '../../lib/utils';
+import { MonthData } from '../lib/types';
+import { yAxisFormatter } from '../lib/utils';
 import { ArrowUpCircle, ArrowDownCircle } from 'lucide-react';
 
 interface SalaryChartProps {

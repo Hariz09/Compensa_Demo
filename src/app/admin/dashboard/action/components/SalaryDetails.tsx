@@ -1,7 +1,7 @@
 // action/components/SalaryDetails.tsx
 
 import React from "react";
-import { MonthlyData } from "../../../lib/types";
+import { MonthlyData } from "../../lib/types";
 
 interface SalaryDetailsProps {
   monthData: MonthlyData;

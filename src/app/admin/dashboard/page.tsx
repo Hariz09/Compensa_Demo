@@ -4,8 +4,8 @@ import React, { useState, useEffect, useCallback, Suspense } from "react";
 import dynamic from "next/dynamic";
 import { Navbar } from "./components/Navbar";
 import { useSearchParams } from "next/navigation";
-import { generateMockData } from "../lib/utils";
-import { MonthData } from "../lib/types";
+import { generateMockData } from "./lib/utils";
+import { MonthData } from "./lib/types";
 import LoadingSkeleton, {
   CardSkeleton,
   ChartSkeleton,
